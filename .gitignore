@@ -1,0 +1,10 @@
+node_modules
+dist
+.astro
+.env
+.env.local
+.env.production
+.vercel
+.vscode
+.DS_Store
+*.log
