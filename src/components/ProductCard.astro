@@ -1,0 +1,24 @@
+---
+import type { Product } from '../lib/supabase';
+import { formatPrice } from '../lib/supabase';
+interface Props { product: Product; hrefPrefix?: string; }
+const { product, hrefPrefix } = Astro.props;
+const base = hrefPrefix ? hrefPrefix : product.category === 'coffee' ? '/shop/coffee' : product.category === 'equipment' ? '/shop/brewing-equipment' : '/shop/bundles';
+const href = `${base}/${product.slug}`;
+---
+<article class="group">
+  <a href={href} class="block">
+    <div class="aspect-[4/5] bg-[#e8d9c0] rounded-lg overflow-hidden mb-4">
+      {product.image_url && (<img src={product.image_url} alt={`${product.name} - ${product.short_description || product.name}`} loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />)}
+    </div>
+    <div class="flex items-start justify-between gap-3">
+      <div>
+        {product.subcategory && (<p class="text-[10px] uppercase tracking-[0.2em] text-[#c9783d] mb-1">{product.subcategory.replace(/-/g,' ')}</p>)}
+        <h3 class="font-display text-lg font-medium text-[#2a1810] leading-tight">{product.name}</h3>
+        {product.short_description && (<p class="text-sm text-[#2a1810]/60 mt-1 line-clamp-2">{product.short_description}</p>)}
+      </div>
+      <div class="text-right"><div class="font-semibold text-[#2a1810]">{formatPrice(product.price_pence, product.currency)}</div></div>
+    </div>
+  </a>
+  <button type="button" data-add-to-cart data-slug={product.slug} data-name={product.name} data-price={product.price_pence} data-image={product.image_url} class="mt-3 w-full text-xs font-semibold tracking-wider uppercase py-2.5 border border-[#2a1810] text-[#2a1810] rounded hover:bg-[#2a1810] hover:text-white transition-colors">Add to cart</button>
+</article>

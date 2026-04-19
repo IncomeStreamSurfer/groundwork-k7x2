@@ -1,37 +1,46 @@
 ---
-import "../styles/global.css";
+import Base from '../layouts/Base.astro';
+import ProductCard from '../components/ProductCard.astro';
+import { getProducts } from '../lib/supabase';
+export const prerender = false;
+const all = await getProducts();
+const featured = all.filter(p => p.featured).slice(0, 6);
+const coffees = all.filter(p => p.category === 'coffee').slice(0, 3);
+const gear = all.filter(p => p.category === 'equipment').slice(0, 3);
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') || '';
+const structuredData = [ { "@context":"https://schema.org", "@type":"ItemList", name: "Featured products at Groundwork Coffee Co.", itemListElement: featured.map((p, i) => ({ "@type":"ListItem", position: i + 1, url: `${siteUrl}/shop/${p.category === 'coffee' ? 'coffee' : p.category === 'equipment' ? 'brewing-equipment' : 'bundles'}/${p.slug}`, name: p.name })) } ];
 ---
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Groundwork Coffee Co. — Building…</title>
-    <meta name="description" content="Specialty coffee + precision brewing tools. Site launching soon." />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
-  </head>
-  <body class="min-h-screen flex items-center justify-center">
-    <div class="text-center max-w-xl px-6">
-      <div class="inline-block mb-8 relative">
-        <svg viewBox="0 0 100 100" class="w-20 h-20 mx-auto" aria-hidden="true">
-          <path d="M30 70 Q35 60 30 50 Q25 40 30 30" stroke="#c9783d" stroke-width="3" fill="none" class="animate-steam" />
-          <path d="M50 70 Q55 60 50 50 Q45 40 50 30" stroke="#c9783d" stroke-width="3" fill="none" class="animate-steam" style="animation-delay: 0.4s" />
-          <path d="M70 70 Q75 60 70 50 Q65 40 70 30" stroke="#c9783d" stroke-width="3" fill="none" class="animate-steam" style="animation-delay: 0.8s" />
-          <rect x="20" y="70" width="60" height="18" rx="4" fill="#2a1810" />
-          <rect x="80" y="74" width="10" height="10" rx="2" fill="#2a1810" />
-        </svg>
+<Base title="Groundwork Coffee Co. | Specialty Coffee & Brewing Tools" description="Shop premium single-origin coffees and precision brewing tools at Groundwork Coffee Co. Elevate every cup. Free shipping on orders over $50." structuredData={structuredData}>
+  <section class="relative overflow-hidden">
+    <div class="max-w-6xl mx-auto px-6 pt-16 pb-24 md:pt-24 md:pb-32 grid md:grid-cols-2 gap-12 items-center">
+      <div>
+        <p class="text-xs uppercase tracking-[0.3em] text-[#c9783d] mb-4">From bean to brew, every detail matters</p>
+        <h1 class="font-display text-5xl md:text-7xl font-medium leading-[1.02] text-[#2a1810]">Specialty Coffee &amp; Brewing Tools for the Serious Cup</h1>
+        <p class="mt-6 text-lg text-[#2a1810]/70 max-w-xl">Roasted fresh to order. Paired with the precision tools home baristas actually use. Groundwork Coffee Co. exists for people who refuse to settle for an ordinary morning cup.</p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="/shop/coffee" class="px-6 py-3 bg-[#2a1810] text-white rounded-md font-medium hover:bg-[#3d2817] transition-colors">Shop coffee</a>
+          <a href="/shop/brewing-equipment" class="px-6 py-3 border border-[#2a1810] text-[#2a1810] rounded-md font-medium hover:bg-[#2a1810] hover:text-white transition-colors">Shop brewing gear</a>
+        </div>
+        <div class="mt-10 flex flex-wrap gap-8 text-xs uppercase tracking-[0.2em] text-[#2a1810]/60"><span>★ Free US shipping $50+</span><span>★ Roasted to order</span><span>★ Specialty grade (85+)</span></div>
       </div>
-      <p class="text-xs uppercase tracking-[0.3em] text-[#c9783d] mb-3">Groundwork Coffee Co.</p>
-      <h1 class="font-display text-5xl md:text-6xl font-medium mb-4">Brewing something special…</h1>
-      <p class="text-[#3d2817]/70 text-lg">Specialty coffees, precision tools, and a home for serious home baristas. The shop opens in moments — the beans are roasting as we speak.</p>
-      <div class="mt-10 flex justify-center gap-2">
-        <span class="w-2 h-2 bg-[#c9783d] rounded-full animate-pulse"></span>
-        <span class="w-2 h-2 bg-[#c9783d] rounded-full animate-pulse" style="animation-delay: 0.2s"></span>
-        <span class="w-2 h-2 bg-[#c9783d] rounded-full animate-pulse" style="animation-delay: 0.4s"></span>
+      <div class="relative">
+        <div class="aspect-[4/5] rounded-2xl overflow-hidden bg-[#e8d9c0]"><img src="https://images.unsplash.com/photo-1559525839-d9acfd3921cc?w=1200&q=80" alt="Freshly roasted specialty coffee beans in a hand-poured cup" class="w-full h-full object-cover" /></div>
+        <div class="absolute -bottom-6 -left-6 bg-white rounded-xl shadow-xl p-5 max-w-[240px] hidden md:block"><div class="text-xs uppercase tracking-[0.2em] text-[#c9783d] mb-1">This week's flight</div><div class="font-display text-lg font-medium">Ethiopia Yirgacheffe</div><div class="text-xs text-[#2a1810]/60 mt-1">Jasmine · Bergamot · Stone fruit</div></div>
       </div>
     </div>
-  </body>
-</html>
+  </section>
+
+  <section class="border-y border-[#2a1810]/10 bg-white"><div class="max-w-6xl mx-auto px-6 py-14 grid md:grid-cols-3 gap-10">
+    <div><div class="text-3xl font-display font-medium text-[#c9783d]">01</div><h2 class="font-display text-xl font-medium mt-2">Sourced with intention</h2><p class="text-sm text-[#2a1810]/70 mt-2">Every lot scores 85+ on the SCA scale. We work directly with importers we trust and can name.</p></div>
+    <div><div class="text-3xl font-display font-medium text-[#c9783d]">02</div><h2 class="font-display text-xl font-medium mt-2">Roasted to order</h2><p class="text-sm text-[#2a1810]/70 mt-2">Beans ship within 72 hours of roasting. You taste the coffee at its absolute peak, never stale.</p></div>
+    <div><div class="text-3xl font-display font-medium text-[#c9783d]">03</div><h2 class="font-display text-xl font-medium mt-2">Tools that actually matter</h2><p class="text-sm text-[#2a1810]/70 mt-2">A grinder that improves every cup, a kettle that lets you control temperature, a scale that gets ratios right.</p></div>
+  </div></section>
+
+  <section class="max-w-6xl mx-auto px-6 py-20"><div class="flex items-end justify-between mb-10"><div><p class="text-xs uppercase tracking-[0.3em] text-[#c9783d] mb-2">On the roast rack</p><h2 class="font-display text-4xl font-medium text-[#2a1810]">This week's coffees</h2></div><a href="/shop/coffee" class="text-sm font-medium text-[#c9783d] underline underline-offset-4">See all coffees →</a></div><div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">{coffees.map(p => <ProductCard product={p} />)}</div></section>
+
+  <section class="bg-[#2a1810] text-[#e8d9c0] py-20"><div class="max-w-4xl mx-auto px-6 text-center"><p class="text-xs uppercase tracking-[0.3em] text-[#c9783d] mb-3">The Groundwork philosophy</p><h2 class="font-display text-4xl md:text-5xl font-medium text-white leading-tight">Great coffee shouldn't be a mystery.</h2><p class="mt-5 text-[#e8d9c0]/80 text-lg max-w-2xl mx-auto">We built Groundwork because the difference between a forgettable cup and an extraordinary one isn't talent — it's the right beans, the right tools, and a few principles that make everything click. <a href="/about" class="underline underline-offset-4 text-white">Read our story →</a></p></div></section>
+
+  <section class="max-w-6xl mx-auto px-6 py-20"><div class="flex items-end justify-between mb-10"><div><p class="text-xs uppercase tracking-[0.3em] text-[#c9783d] mb-2">Precision gear</p><h2 class="font-display text-4xl font-medium text-[#2a1810]">Home barista essentials</h2></div><a href="/shop/brewing-equipment" class="text-sm font-medium text-[#c9783d] underline underline-offset-4">See all gear →</a></div><div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">{gear.map(p => <ProductCard product={p} />)}</div></section>
+
+  <section class="max-w-6xl mx-auto px-6 pb-20"><div class="grid md:grid-cols-2 rounded-2xl overflow-hidden bg-[#e8d9c0]"><div class="p-10 md:p-14"><p class="text-xs uppercase tracking-[0.3em] text-[#c9783d] mb-3">Coffee + gear bundles</p><h2 class="font-display text-4xl font-medium text-[#2a1810] leading-tight">Everything you need to brew better — together.</h2><p class="mt-4 text-[#2a1810]/70">Save 15–20% when you pair fresh-roasted coffees with matched brewing tools. Built to gift, built to upgrade your setup.</p><a href="/shop/bundles" class="inline-block mt-6 px-6 py-3 bg-[#2a1810] text-white rounded-md font-medium hover:bg-[#3d2817] transition-colors">Explore bundles</a></div><div class="h-full min-h-[300px] bg-cover bg-center" style="background-image:url('https://images.unsplash.com/photo-1494314671902-399b18174975?w=1200&q=80')" role="img" aria-label="Curated coffee and brewing gear bundle"></div></div></section>
+</Base>

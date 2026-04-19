@@ -1,0 +1,125 @@
+---
+import "../styles/global.css";
+import SEOHead from "../components/SEOHead.astro";
+interface Props { title: string; description: string; ogImage?: string; ogType?: string; structuredData?: object | object[]; noindex?: boolean; publishDate?: string; modifiedDate?: string; author?: string; tags?: string[]; }
+const { title, description, ogImage, ogType, structuredData, noindex, publishDate, modifiedDate, author, tags } = Astro.props;
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') || '';
+const year = new Date().getFullYear();
+const globalSchema = [
+  { "@context":"https://schema.org","@type":"Organization", name: "Groundwork Coffee Co.", url: siteUrl, logo: `${siteUrl}/favicon.svg`, sameAs: [] },
+  { "@context":"https://schema.org","@type":"WebSite", name: "Groundwork Coffee Co.", url: siteUrl, description: "Specialty coffee and precision brewing tools." },
+];
+const userSchema = Array.isArray(structuredData) ? structuredData : structuredData ? [structuredData] : [];
+const allSchema = [...globalSchema, ...userSchema];
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <SEOHead title={title} description={description} ogImage={ogImage} ogType={ogType} author={author} publishDate={publishDate} modifiedDate={modifiedDate} tags={tags} noindex={noindex} structuredData={allSchema} />
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <header class="border-b border-[#2a1810]/10 bg-[#faf6f0]/80 backdrop-blur sticky top-0 z-40">
+      <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+        <a href="/" class="flex items-center gap-2 font-display text-xl font-semibold text-[#2a1810]">
+          <svg viewBox="0 0 100 100" class="w-7 h-7" aria-hidden="true"><rect width="100" height="100" rx="18" fill="#2a1810"/><path d="M30 35 Q35 25 30 20" stroke="#c9783d" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M50 35 Q55 25 50 20" stroke="#c9783d" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M70 35 Q75 25 70 20" stroke="#c9783d" stroke-width="6" fill="none" stroke-linecap="round"/><rect x="22" y="42" width="56" height="42" rx="4" fill="#e8d9c0"/><rect x="78" y="50" width="14" height="18" rx="3" fill="#e8d9c0"/></svg>
+          Groundwork
+        </a>
+        <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
+          <a href="/shop/coffee" class="hover:text-[#c9783d]">Coffee</a>
+          <a href="/shop/brewing-equipment" class="hover:text-[#c9783d]">Gear</a>
+          <a href="/shop/bundles" class="hover:text-[#c9783d]">Bundles</a>
+          <a href="/about" class="hover:text-[#c9783d]">About</a>
+          <a href="/blog" class="hover:text-[#c9783d]">Journal</a>
+          <a href="/contact" class="hover:text-[#c9783d]">Contact</a>
+        </nav>
+        <div class="flex items-center gap-3">
+          <button id="cart-toggle" aria-label="Open cart" class="relative text-[#2a1810] hover:text-[#c9783d]"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m12-9l2 9m-9-4a2 2 0 11-4 0 2 2 0 014 0zm10 0a2 2 0 11-4 0 2 2 0 014 0z"/></svg><span id="cart-count" class="absolute -top-1 -right-1 w-5 h-5 bg-[#c9783d] text-white text-[10px] font-semibold rounded-full flex items-center justify-center hidden">0</span></button>
+        </div>
+      </div>
+    </header>
+
+    <main class="flex-1"><slot /></main>
+
+    <footer class="mt-24 border-t border-[#2a1810]/10 bg-[#2a1810] text-[#e8d9c0]">
+      <div class="max-w-6xl mx-auto px-6 py-16 grid md:grid-cols-4 gap-10">
+        <div class="md:col-span-2">
+          <div class="font-display text-2xl font-semibold text-white mb-3">Groundwork Coffee Co.</div>
+          <p class="text-[#e8d9c0]/70 max-w-sm">Specialty-grade beans, precision brewing tools, and the knowledge to use them. Roasted fresh and shipped direct to your door.</p>
+          <form action="/api/subscribe" method="post" class="mt-6 flex gap-2 max-w-sm">
+            <input type="email" name="email" required placeholder="Your email" class="flex-1 bg-white/5 border border-white/15 px-3 py-2 rounded text-sm text-white placeholder:text-white/40 focus:outline-none focus:border-[#c9783d]" />
+            <button class="px-4 py-2 bg-[#c9783d] text-white text-sm font-medium rounded hover:bg-[#b56a33]">Subscribe</button>
+          </form>
+        </div>
+        <div>
+          <div class="text-xs uppercase tracking-[0.2em] text-white/60 mb-4">Shop</div>
+          <ul class="space-y-2 text-sm">
+            <li><a href="/shop/coffee" class="hover:text-white">Coffee beans</a></li>
+            <li><a href="/shop/brewing-equipment" class="hover:text-white">Brewing equipment</a></li>
+            <li><a href="/shop/bundles" class="hover:text-white">Bundles</a></li>
+            <li><a href="/shop" class="hover:text-white">All products</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="text-xs uppercase tracking-[0.2em] text-white/60 mb-4">Company</div>
+          <ul class="space-y-2 text-sm">
+            <li><a href="/about" class="hover:text-white">Our story</a></li>
+            <li><a href="/faq" class="hover:text-white">FAQ</a></li>
+            <li><a href="/shipping-returns" class="hover:text-white">Shipping &amp; returns</a></li>
+            <li><a href="/contact" class="hover:text-white">Contact</a></li>
+            <li><a href="/blog" class="hover:text-white">Journal</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-white/10 py-6 text-center text-xs text-white/50">© {year} Groundwork Coffee Co. — Brewed with care. <span class="mx-2">·</span> hello@groundworkcoffee.co</div>
+    </footer>
+
+    <div id="cart-drawer" class="fixed inset-0 z-50 hidden">
+      <div id="cart-backdrop" class="absolute inset-0 bg-black/40"></div>
+      <aside class="absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-2xl flex flex-col">
+        <div class="px-6 py-4 border-b flex items-center justify-between"><h2 class="font-display text-2xl font-medium">Your cart</h2><button id="cart-close" aria-label="Close cart" class="text-[#2a1810] hover:text-[#c9783d]">✕</button></div>
+        <div id="cart-items" class="flex-1 overflow-y-auto p-6 space-y-4"></div>
+        <div class="border-t p-6 space-y-4"><div class="flex justify-between font-semibold"><span>Subtotal</span><span id="cart-total">$0.00</span></div><p class="text-xs text-[#2a1810]/60">Free shipping on US orders over $50.</p><button id="cart-checkout" disabled class="w-full bg-[#2a1810] text-white py-3 rounded font-medium hover:bg-[#3d2817] disabled:opacity-40 disabled:cursor-not-allowed">Secure checkout</button></div>
+      </aside>
+    </div>
+
+    <script is:inline>
+      (function(){
+        const CART_KEY = 'gw-cart';
+        const fmt = (cents) => new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(cents/100);
+        function readCart(){ try { return JSON.parse(localStorage.getItem(CART_KEY)||'[]'); } catch(e){ return []; } }
+        function writeCart(items){ localStorage.setItem(CART_KEY, JSON.stringify(items)); render(); }
+        function addItem(p){ const items = readCart(); const ex = items.find(i => i.slug === p.slug); if (ex) ex.quantity += 1; else items.push({ slug: p.slug, name: p.name, price: p.price, image: p.image, quantity: 1 }); writeCart(items); openDrawer(); }
+        function removeItem(slug){ writeCart(readCart().filter(i => i.slug !== slug)); }
+        function changeQty(slug, delta){ const items = readCart(); const it = items.find(i => i.slug === slug); if (!it) return; it.quantity = Math.max(1, it.quantity + delta); writeCart(items); }
+        function render(){
+          const items = readCart();
+          const count = items.reduce((s,i)=>s+i.quantity,0);
+          const total = items.reduce((s,i)=>s+i.price*i.quantity,0);
+          const countEl = document.getElementById('cart-count');
+          if (countEl) { countEl.textContent = String(count); countEl.classList.toggle('hidden', count === 0); }
+          const totalEl = document.getElementById('cart-total');
+          if (totalEl) totalEl.textContent = fmt(total);
+          const itemsEl = document.getElementById('cart-items');
+          const btn = document.getElementById('cart-checkout');
+          if (btn) btn.disabled = count === 0;
+          if (itemsEl) {
+            if (!items.length) { itemsEl.innerHTML = '<p class="text-[#2a1810]/60 text-sm text-center py-8">Your cart is empty.<br/><a href="/shop" class="text-[#c9783d] underline">Start shopping →</a></p>'; }
+            else {
+              itemsEl.innerHTML = items.map(i => `<div class="flex gap-4 items-start"><img src="${i.image||''}" alt="" class="w-16 h-16 object-cover rounded bg-[#e8d9c0]"/><div class="flex-1"><div class="font-medium text-sm">${i.name}</div><div class="text-xs text-[#2a1810]/60 mt-1">${fmt(i.price)}</div><div class="flex items-center gap-2 mt-2"><button data-qty="-1" data-slug="${i.slug}" class="w-6 h-6 border rounded">−</button><span class="text-sm">${i.quantity}</span><button data-qty="1" data-slug="${i.slug}" class="w-6 h-6 border rounded">+</button><button data-remove="${i.slug}" class="ml-auto text-xs text-[#c9783d] underline">Remove</button></div></div></div>`).join('');
+              itemsEl.querySelectorAll('[data-qty]').forEach(b => b.addEventListener('click', () => changeQty(b.dataset.slug, Number(b.dataset.qty))));
+              itemsEl.querySelectorAll('[data-remove]').forEach(b => b.addEventListener('click', () => removeItem(b.dataset.remove)));
+            }
+          }
+        }
+        function openDrawer(){ document.getElementById('cart-drawer').classList.remove('hidden'); }
+        function closeDrawer(){ document.getElementById('cart-drawer').classList.add('hidden'); }
+        document.addEventListener('click', (e) => { const addBtn = e.target.closest('[data-add-to-cart]'); if (addBtn) { e.preventDefault(); addItem({ slug: addBtn.dataset.slug, name: addBtn.dataset.name, price: Number(addBtn.dataset.price), image: addBtn.dataset.image }); } });
+        document.getElementById('cart-toggle')?.addEventListener('click', openDrawer);
+        document.getElementById('cart-close')?.addEventListener('click', closeDrawer);
+        document.getElementById('cart-backdrop')?.addEventListener('click', closeDrawer);
+        document.getElementById('cart-checkout')?.addEventListener('click', async () => { const items = readCart(); if (!items.length) return; const btn = document.getElementById('cart-checkout'); btn.disabled = true; btn.textContent = 'Redirecting…'; const res = await fetch('/api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items }) }); const data = await res.json(); if (data.url) window.location.href = data.url; else { btn.disabled = false; btn.textContent = 'Secure checkout'; alert(data.error || 'Checkout failed'); } });
+        render();
+      })();
+    </script>
+  </body>
+</html>
