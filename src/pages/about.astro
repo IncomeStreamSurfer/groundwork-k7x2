@@ -1,0 +1,32 @@
+---
+import Base from '../layouts/Base.astro';
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') || '';
+const structuredData = [
+  { "@context":"https://schema.org","@type":"AboutPage", name:"About Groundwork Coffee Co.", url: `${siteUrl}/about` },
+  { "@context":"https://schema.org","@type":"BreadcrumbList", itemListElement:[{"@type":"ListItem",position:1,name:"Home",item:siteUrl},{"@type":"ListItem",position:2,name:"About",item:`${siteUrl}/about`}]},
+];
+---
+<Base title="About Us | Groundwork Coffee Co." description="Learn how Groundwork Coffee Co. was built on a passion for great coffee and precision brewing. Our story, our values, our craft." structuredData={structuredData}>
+  <section class="max-w-4xl mx-auto px-6 pt-16 pb-12">
+    <nav class="text-xs text-[#2a1810]/60 mb-4"><a href="/" class="hover:text-[#c9783d]">Home</a> / About</nav>
+    <p class="text-xs uppercase tracking-[0.3em] text-[#c9783d] mb-3">Our story</p>
+    <h1 class="font-display text-4xl md:text-5xl font-medium text-[#2a1810] leading-[1.1]">We Started Groundwork Because Great Coffee Shouldn't Be Hard to Find</h1>
+  </section>
+  <section class="max-w-4xl mx-auto px-6 mb-16">
+    <div class="aspect-[16/9] rounded-xl overflow-hidden bg-[#e8d9c0]"><img src="https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=1600&q=80" alt="A roaster pouring freshly roasted beans into a hopper" class="w-full h-full object-cover" /></div>
+  </section>
+  <section class="max-w-3xl mx-auto px-6 pb-16 space-y-6 text-[#2a1810]/80 leading-relaxed">
+    <p class="text-xl text-[#2a1810]">Groundwork Coffee Co. started with a frustration most coffee lovers know well: you can taste an incredible cup at a great café, try to recreate it at home, and end up with something that's… fine. Decent. Nothing like the thing that made you fall in love.</p>
+    <p>We founded Groundwork in a small roaster in the American Northeast with a straightforward mission: make the kind of specialty coffee we love at cafés accessible at home — and make the tools that unlock it feel obvious and easy to use. No intimidation, no barista-only jargon, just <a class="underline" href="/shop/coffee">great beans</a> and <a class="underline" href="/shop/brewing-equipment">honest gear</a> that work together.</p>
+    <h2 class="font-display text-3xl font-medium text-[#2a1810] pt-6">What we believe</h2>
+    <p><strong class="text-[#2a1810]">Sourcing is half the cup.</strong> Every bean we roast scores 85+ on the Specialty Coffee Association scale. We work with importers we can name — La Palma &amp; El Tucán in Colombia, Daye Bensa in Ethiopia, Finca El Puente in Honduras — because traceability isn't marketing, it's table stakes.</p>
+    <p><strong class="text-[#2a1810]">Fresh matters more than fancy.</strong> Coffee tastes best between 5 and 21 days after roasting. We ship within 72 hours of the roast, so you get peak flavor, not peak shelf-life. Dated bags, always.</p>
+    <p><strong class="text-[#2a1810]">Tools should earn their counter space.</strong> There's a lot of gear in coffee that looks cool and does nothing. We sell what actually moves the needle: a <a class="underline" href="/shop/brewing-equipment/burr-grinder">burr grinder</a> that gives you consistent particle size, a <a class="underline" href="/shop/brewing-equipment/pour-over-kettle">kettle</a> that lets you control temperature, a <a class="underline" href="/shop/brewing-equipment/coffee-scale">scale</a> that gets your ratios right.</p>
+    <h2 class="font-display text-3xl font-medium text-[#2a1810] pt-6">How we roast</h2>
+    <p>We roast in small batches on a 15kg Loring. Every lot gets profiled individually — we're after the flavor that the farmer grew, not a house style imposed on it. Light roasts show bright origin character. Medium roasts balance sweetness and body. Dark roasts (and our <a class="underline" href="/shop/coffee/espresso-roast">Espresso</a>) are developed without tipping into bitterness.</p>
+    <p>Each bag ships with the roast date stamped on it. If you want it within a specific window, you can subscribe — we'll mail fresh coffee on whatever cadence you choose.</p>
+    <h2 class="font-display text-3xl font-medium text-[#2a1810] pt-6">What's next</h2>
+    <p>We're heads-down on our subscription, more origins, and a growing lineup of tools. If you have a brewer or accessory you'd love to see us carry, <a class="underline" href="/contact">tell us</a>. We listen.</p>
+    <p class="pt-4 text-[#c9783d] font-medium">— The Groundwork team</p>
+  </section>
+</Base>

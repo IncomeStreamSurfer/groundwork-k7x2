@@ -1,0 +1,37 @@
+---
+import Base from '../layouts/Base.astro';
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') || '';
+const submitted = Astro.url.searchParams.get('submitted') === '1';
+const structuredData = [
+  { "@context":"https://schema.org","@type":"ContactPage", name:"Contact Groundwork Coffee Co.", url: `${siteUrl}/contact` },
+  { "@context":"https://schema.org","@type":"BreadcrumbList", itemListElement:[{"@type":"ListItem",position:1,name:"Home",item:siteUrl},{"@type":"ListItem",position:2,name:"Contact",item:`${siteUrl}/contact`}]},
+];
+---
+<Base title="Contact Us | Groundwork Coffee Co." description="Have a question about your order or our coffees? Reach out to the Groundwork team — we typically respond within 24 hours." structuredData={structuredData}>
+  <section class="max-w-4xl mx-auto px-6 pt-16 pb-12">
+    <nav class="text-xs text-[#2a1810]/60 mb-4"><a href="/" class="hover:text-[#c9783d]">Home</a> / Contact</nav>
+    <p class="text-xs uppercase tracking-[0.3em] text-[#c9783d] mb-3">Get in touch</p>
+    <h1 class="font-display text-4xl md:text-5xl font-medium text-[#2a1810] leading-tight">Get in Touch — We're Coffee People, We Love to Talk</h1>
+    <p class="mt-5 max-w-2xl text-lg text-[#2a1810]/70">Questions about an order, dialing in your grind, or want to chat about a bean? Email us at <a class="underline" href="mailto:hello@groundworkcoffee.co">hello@groundworkcoffee.co</a> or use the form below. We usually reply within 24 hours (Monday–Friday).</p>
+  </section>
+  <section class="max-w-4xl mx-auto px-6 pb-20 grid md:grid-cols-3 gap-10">
+    <div class="md:col-span-2">
+      {submitted ? (
+        <div class="rounded-lg border border-[#c9783d] bg-[#c9783d]/10 p-6"><h2 class="font-display text-2xl font-medium text-[#2a1810]">Message received. ☕</h2><p class="mt-2 text-[#2a1810]/75">Thanks — we'll be in touch within a day. In the meantime, <a class="underline" href="/shop/coffee">keep sipping</a>.</p></div>
+      ) : (
+        <form action="/api/contact" method="post" class="space-y-5">
+          <div><label class="text-sm font-medium text-[#2a1810] block mb-1.5">Your name</label><input required name="name" class="w-full border border-[#2a1810]/20 rounded px-4 py-3 focus:outline-none focus:border-[#c9783d]" placeholder="Jane Espresso" /></div>
+          <div><label class="text-sm font-medium text-[#2a1810] block mb-1.5">Your email</label><input required type="email" name="email" class="w-full border border-[#2a1810]/20 rounded px-4 py-3 focus:outline-none focus:border-[#c9783d]" placeholder="jane@example.com" /></div>
+          <div><label class="text-sm font-medium text-[#2a1810] block mb-1.5">Subject</label><select name="subject" class="w-full border border-[#2a1810]/20 rounded px-4 py-3 focus:outline-none focus:border-[#c9783d]"><option>Order question</option><option>Product advice</option><option>Wholesale inquiry</option><option>Press / partnerships</option><option>Something else</option></select></div>
+          <div><label class="text-sm font-medium text-[#2a1810] block mb-1.5">Your message</label><textarea required rows="6" name="message" class="w-full border border-[#2a1810]/20 rounded px-4 py-3 focus:outline-none focus:border-[#c9783d]" placeholder="Tell us what's on your mind…"></textarea></div>
+          <button class="px-8 py-3 bg-[#2a1810] text-white rounded font-medium hover:bg-[#3d2817]">Send message</button>
+        </form>
+      )}
+    </div>
+    <aside class="space-y-6">
+      <div><div class="text-xs uppercase tracking-[0.2em] text-[#c9783d] mb-2">Email</div><a class="text-[#2a1810] font-medium" href="mailto:hello@groundworkcoffee.co">hello@groundworkcoffee.co</a></div>
+      <div><div class="text-xs uppercase tracking-[0.2em] text-[#c9783d] mb-2">Response time</div><p class="text-[#2a1810]/75 text-sm">Usually within 24h, Mon–Fri.</p></div>
+      <div><div class="text-xs uppercase tracking-[0.2em] text-[#c9783d] mb-2">Self-serve</div><ul class="text-sm text-[#2a1810]/75 space-y-1.5"><li><a class="underline" href="/faq">FAQ</a></li><li><a class="underline" href="/shipping-returns">Shipping &amp; returns</a></li><li><a class="underline" href="/shop">Shop all products</a></li></ul></div>
+    </aside>
+  </section>
+</Base>

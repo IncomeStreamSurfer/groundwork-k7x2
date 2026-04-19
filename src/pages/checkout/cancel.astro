@@ -1,0 +1,12 @@
+---
+import Base from '../../layouts/Base.astro';
+export const prerender = false;
+---
+<Base title="Checkout cancelled | Groundwork Coffee Co." description="Your checkout was cancelled — nothing was charged." noindex>
+  <section class="max-w-2xl mx-auto px-6 py-24 text-center">
+    <p class="text-xs uppercase tracking-[0.3em] text-[#c9783d] mb-3">Nothing was charged</p>
+    <h1 class="font-display text-4xl md:text-5xl font-medium text-[#2a1810] leading-tight">Checkout cancelled — the cart's still yours.</h1>
+    <p class="mt-5 text-lg text-[#2a1810]/70">Change your mind? Your items are saved.</p>
+    <div class="mt-8 flex justify-center gap-3"><a href="/shop" class="px-6 py-3 bg-[#2a1810] text-white rounded font-medium">Back to shop</a><a href="/faq" class="px-6 py-3 border border-[#2a1810] text-[#2a1810] rounded font-medium">Got questions?</a></div>
+  </section>
+</Base>

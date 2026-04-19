@@ -1,0 +1,35 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getPostBySlug } from '../../lib/supabase';
+export const prerender = false;
+const { slug } = Astro.params;
+const post = slug ? await getPostBySlug(slug) : null;
+if (!post) return Astro.redirect('/blog', 302);
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') || '';
+function mdToHtml(md: string) {
+  if (!md) return '';
+  const esc = (s: string) => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  function inline(s: string) { return s.replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" class="underline text-[#c9783d]">$1</a>').replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>').replace(/\*([^*]+)\*/g,'<em>$1</em>'); }
+  return md.split(/\n\n+/).map(b => {
+    b = b.trim(); if (!b) return '';
+    if (/^#\s/.test(b)) return `<h2 class="font-display text-3xl font-medium mt-10 mb-3 text-[#2a1810]">${esc(b.replace(/^#\s*/,''))}</h2>`;
+    if (/^##\s/.test(b)) return `<h3 class="font-display text-2xl font-medium mt-8 mb-2 text-[#2a1810]">${esc(b.replace(/^##\s*/,''))}</h3>`;
+    if (/^[-*]\s/.test(b)) return `<ul class="list-disc pl-6 space-y-2">${b.split('\n').map(l => `<li>${inline(esc(l.replace(/^[-*]\s*/,'')))}</li>`).join('')}</ul>`;
+    return `<p class="mt-5 text-[#2a1810]/80 leading-relaxed">${inline(esc(b))}</p>`;
+  }).join('');
+}
+const structuredData = [
+  { "@context":"https://schema.org","@type":"BlogPosting", headline: post.title, datePublished: post.published_at, author: { "@type":"Person", name: "Groundwork Editorial" }, publisher: { "@type":"Organization", name:"Groundwork Coffee Co.", logo: { "@type":"ImageObject", url: `${siteUrl}/favicon.svg` } }, image: post.cover_image_url || undefined, description: post.seo_description || post.excerpt || '', mainEntityOfPage: `${siteUrl}/blog/${post.slug}` },
+  { "@context":"https://schema.org","@type":"BreadcrumbList", itemListElement:[{"@type":"ListItem",position:1,name:"Home",item:siteUrl},{"@type":"ListItem",position:2,name:"Journal",item:`${siteUrl}/blog`},{"@type":"ListItem",position:3,name:post.title,item:`${siteUrl}/blog/${post.slug}`}] },
+];
+---
+<Base title={post.seo_title || `${post.title} | The Groundwork Journal`} description={post.seo_description || post.excerpt || ''} ogImage={post.cover_image_url || undefined} ogType="article" publishDate={post.published_at} tags={post.tags || []} structuredData={structuredData}>
+  <article class="max-w-3xl mx-auto px-6 pt-16 pb-20">
+    <nav class="text-xs text-[#2a1810]/60 mb-4"><a href="/" class="hover:text-[#c9783d]">Home</a> / <a href="/blog" class="hover:text-[#c9783d]">Journal</a> / {post.title}</nav>
+    <p class="text-xs uppercase tracking-[0.3em] text-[#c9783d] mb-3">{new Date(post.published_at).toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})}</p>
+    <h1 class="font-display text-4xl md:text-5xl font-medium text-[#2a1810] leading-[1.15]">{post.title}</h1>
+    {post.cover_image_url && (<div class="aspect-[16/9] mt-8 rounded-xl overflow-hidden bg-[#e8d9c0]"><img src={post.cover_image_url} alt={post.title} class="w-full h-full object-cover" /></div>)}
+    <div class="mt-10" set:html={mdToHtml(post.body || '')} />
+    <div class="mt-14 pt-8 border-t border-[#2a1810]/10 text-sm text-[#2a1810]/70"><p>Shop: <a class="underline" href="/shop/coffee">specialty coffee</a> · <a class="underline" href="/shop/brewing-equipment">brewing equipment</a> · <a class="underline" href="/shop/bundles">bundles</a>.</p></div>
+  </article>
+</Base>

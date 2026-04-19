@@ -1,0 +1,24 @@
+---
+import Base from '../layouts/Base.astro';
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') || '';
+const structuredData = [
+  { "@context":"https://schema.org","@type":"WebPage", name:"Shipping & Returns", url: `${siteUrl}/shipping-returns` },
+  { "@context":"https://schema.org","@type":"BreadcrumbList", itemListElement:[{"@type":"ListItem",position:1,name:"Home",item:siteUrl},{"@type":"ListItem",position:2,name:"Shipping & Returns",item:`${siteUrl}/shipping-returns`}]},
+];
+---
+<Base title="Shipping & Returns | Groundwork Coffee Co." description="Shipping rates, delivery times, and our no-questions-asked returns policy. Roasted fresh, shipped fast, backed by our 30-day guarantee." structuredData={structuredData}>
+  <section class="max-w-3xl mx-auto px-6 pt-16 pb-12">
+    <nav class="text-xs text-[#2a1810]/60 mb-4"><a href="/" class="hover:text-[#c9783d]">Home</a> / Shipping &amp; Returns</nav>
+    <p class="text-xs uppercase tracking-[0.3em] text-[#c9783d] mb-3">Logistics, simply</p>
+    <h1 class="font-display text-4xl md:text-5xl font-medium text-[#2a1810] leading-tight">Shipping &amp; Returns</h1>
+    <p class="mt-5 text-lg text-[#2a1810]/70">We ship fresh, stand behind everything we make, and make it easy to send things back if they don't work for you. Short version below.</p>
+  </section>
+  <section class="max-w-3xl mx-auto px-6 pb-16 space-y-10 text-[#2a1810]/80 leading-relaxed">
+    <div><h2 class="font-display text-2xl font-medium text-[#2a1810] mb-3">Shipping</h2><ul class="space-y-3"><li><strong class="text-[#2a1810]">US orders:</strong> $6 flat rate, free over $50. Ships within 1–2 business days of roasting (coffee) or 1 business day (equipment). USPS or UPS ground.</li><li><strong class="text-[#2a1810]">US expedited:</strong> $15 for 2-day, $25 for overnight. Order by 11am ET for same-day dispatch.</li><li><strong class="text-[#2a1810]">Canada:</strong> $14 flat rate, 5–8 business days.</li><li><strong class="text-[#2a1810]">International:</strong> Calculated at checkout based on destination + weight. Typically 7–14 business days. Customs fees may apply and are the buyer's responsibility.</li></ul></div>
+    <div><h2 class="font-display text-2xl font-medium text-[#2a1810] mb-3">Roast &amp; ship schedule</h2><p>We roast Monday, Wednesday, and Friday. Orders placed before 11am ET on a roast day ship that afternoon; others ship on the next roast day. Every bag is dated.</p></div>
+    <div><h2 class="font-display text-2xl font-medium text-[#2a1810] mb-3">Returns — 30-day guarantee</h2><ul class="space-y-3"><li><strong class="text-[#2a1810]">Coffee:</strong> If a bag arrived and something's off — stale, damaged, or just not what you expected — email us. We'll replace it or refund you. No need to ship it back.</li><li><strong class="text-[#2a1810]">Brewing equipment:</strong> Unopened gear can be returned within 30 days for a full refund. Opened gear can be returned within 30 days if defective — we'll cover shipping both ways and refund in full.</li><li><strong class="text-[#2a1810]">Bundles:</strong> Treated as gear — returnable within 30 days if any item is unopened or defective.</li></ul><p class="mt-4">To start a return, email <a class="underline" href="mailto:hello@groundworkcoffee.co">hello@groundworkcoffee.co</a> with your order number. No forms, no drama.</p></div>
+    <div><h2 class="font-display text-2xl font-medium text-[#2a1810] mb-3">Lost or damaged in transit</h2><p>All shipments are insured. If a package arrives damaged or goes missing, let us know within 14 days and we'll replace it or issue a refund immediately.</p></div>
+    <div><h2 class="font-display text-2xl font-medium text-[#2a1810] mb-3">Warranty</h2><p>Our brewing equipment carries a 2-year warranty against manufacturing defects. Normal wear, drops, and splash damage aren't covered — but honest defects absolutely are.</p></div>
+    <p class="pt-4"><strong>Questions?</strong> Check the <a class="underline" href="/faq">FAQ</a> or <a class="underline" href="/contact">drop us a line</a>.</p>
+  </section>
+</Base>

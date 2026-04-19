@@ -1,0 +1,45 @@
+---
+import Base from '../layouts/Base.astro';
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') || '';
+const faqs = [
+  { q: "How fresh is your coffee?", a: "Every bag ships within 72 hours of roasting and is stamped with the roast date. Specialty coffee peaks between 5 and 21 days post-roast — we want you brewing right in that window." },
+  { q: "Do you grind the coffee for me?", a: "By default, our coffee ships as whole bean — the freshest way. At checkout you can pick a grind size (espresso, moka pot, drip, pour-over, French press). For the absolute best cup, a <a class='underline' href='/shop/brewing-equipment/burr-grinder'>home burr grinder</a> is the single biggest upgrade." },
+  { q: "Do you have a coffee subscription?", a: "A subscription is coming soon. Sign up for the newsletter and we'll let you know the moment it launches — early subscribers get the first month at 30% off." },
+  { q: "How long does shipping take?", a: "US orders ship in 1–2 business days and arrive in 3–5 business days via USPS or UPS. International takes 7–14 business days. Full detail on the <a class='underline' href='/shipping-returns'>shipping &amp; returns page</a>." },
+  { q: "Do you ship internationally?", a: "Yes — to most countries. International shipping is calculated at checkout based on weight and destination." },
+  { q: "Is your coffee organic / fair trade?", a: "Some lots are certified organic and/or fair trade — look for the tag on the product page. More broadly, we buy direct-trade when possible and always pay above Fair Trade minimums. Transparency over labels." },
+  { q: "What roast level should I buy?", a: "Depends on your brew method. Light roasts shine in pour-over and filter. Medium is versatile across every method. Dark (our <a class='underline' href='/shop/coffee/espresso-roast'>Espresso</a>) is purpose-built for espresso and milk drinks." },
+  { q: "Can I return brewing equipment?", a: "Yes — unopened equipment can be returned within 30 days for a full refund. Opened gear can be returned within 30 days if defective. Coffee is non-returnable once opened (but if there's an issue, just let us know and we'll make it right)." },
+  { q: "Do you do wholesale or café accounts?", a: "We do. Reach out via the <a class='underline' href='/contact'>contact form</a> with 'Wholesale inquiry' and we'll send a current menu and price sheet." },
+  { q: "How should I store coffee at home?", a: "Cool, dark, dry, sealed. Our bags have one-way degassing valves so you can just reseal the zip. Don't freeze it (unless it's more than 3 weeks post-roast and you want to stash a small stockpile)." },
+  { q: "Can I gift a bundle?", a: "Yes — our <a class='underline' href='/shop/bundles'>bundles</a> are built to gift. Add a note at checkout and we'll include it with the order. Bundles always ship free." },
+  { q: "What brew method should I start with?", a: "Our favorite starter is pour-over — low gear overhead, forgiving, incredibly rewarding. Pair a <a class='underline' href='/shop/brewing-equipment/pour-over-kettle'>gooseneck kettle</a>, a <a class='underline' href='/shop/brewing-equipment/coffee-scale'>scale</a>, and a bag of <a class='underline' href='/shop/coffee/ethiopia-yirgacheffe'>Ethiopia Yirgacheffe</a>. You'll be dialed in within a week." },
+];
+const structuredData = [
+  { "@context":"https://schema.org","@type":"FAQPage", mainEntity: faqs.map(f => ({ "@type":"Question", name: f.q, acceptedAnswer: { "@type":"Answer", text: f.a.replace(/<[^>]*>/g,'') } })) },
+  { "@context":"https://schema.org","@type":"BreadcrumbList", itemListElement:[{"@type":"ListItem",position:1,name:"Home",item:siteUrl},{"@type":"ListItem",position:2,name:"FAQ",item:`${siteUrl}/faq`}]},
+];
+---
+<Base title="FAQ — Coffee & Brewing Questions | Groundwork Coffee Co." description="Got questions? Find answers about our roasting process, grind options, subscriptions, shipping, and brewing tools. We've got you covered." structuredData={structuredData}>
+  <section class="max-w-3xl mx-auto px-6 pt-16 pb-10">
+    <nav class="text-xs text-[#2a1810]/60 mb-4"><a href="/" class="hover:text-[#c9783d]">Home</a> / FAQ</nav>
+    <p class="text-xs uppercase tracking-[0.3em] text-[#c9783d] mb-3">Frequently asked</p>
+    <h1 class="font-display text-4xl md:text-5xl font-medium text-[#2a1810] leading-tight">Frequently Asked Questions About Our Coffee &amp; Gear</h1>
+    <p class="mt-5 text-lg text-[#2a1810]/70">A quick answers page for the things people ask us most. If your question isn't here, <a class="underline" href="/contact">send us a message</a> — we love nerding out.</p>
+  </section>
+  <section class="max-w-3xl mx-auto px-6 pb-20">
+    <div class="divide-y divide-[#2a1810]/10 border-y border-[#2a1810]/10">
+      {faqs.map((f, i) => (
+        <details class="py-5 group" open={i === 0}>
+          <summary class="font-display text-xl font-medium cursor-pointer flex items-center justify-between list-none">{f.q}<span class="text-[#c9783d] transition-transform group-open:rotate-45">+</span></summary>
+          <div class="mt-3 text-[#2a1810]/75 leading-relaxed" set:html={f.a} />
+        </details>
+      ))}
+    </div>
+    <div class="mt-12 rounded-xl bg-[#e8d9c0] p-8 text-center">
+      <h2 class="font-display text-2xl font-medium text-[#2a1810]">Still have questions?</h2>
+      <p class="text-[#2a1810]/75 mt-2">We reply within a day, sometimes within an hour if the espresso is strong.</p>
+      <a href="/contact" class="inline-block mt-4 px-6 py-3 bg-[#2a1810] text-white rounded font-medium">Contact us</a>
+    </div>
+  </section>
+</Base>

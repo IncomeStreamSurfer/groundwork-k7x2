@@ -1,0 +1,14 @@
+---
+import Base from '../../layouts/Base.astro';
+export const prerender = false;
+---
+<Base title="Thanks for your order | Groundwork Coffee Co." description="Your order is confirmed — we're getting it roasted and packed." noindex>
+  <section class="max-w-2xl mx-auto px-6 py-24 text-center">
+    <div class="text-6xl mb-6">☕</div>
+    <p class="text-xs uppercase tracking-[0.3em] text-[#c9783d] mb-3">Order confirmed</p>
+    <h1 class="font-display text-4xl md:text-5xl font-medium text-[#2a1810] leading-tight">Thanks — your coffee's on the way.</h1>
+    <p class="mt-5 text-lg text-[#2a1810]/70">Check your inbox for a confirmation email. We roast fresh and ship within 72 hours — your tracking link will follow shortly.</p>
+    <div class="mt-8 flex justify-center gap-3"><a href="/shop/coffee" class="px-6 py-3 bg-[#2a1810] text-white rounded font-medium">Shop more</a><a href="/" class="px-6 py-3 border border-[#2a1810] text-[#2a1810] rounded font-medium">Back home</a></div>
+  </section>
+  <script is:inline>try { localStorage.removeItem('gw-cart'); } catch(e) {}</script>
+</Base>
