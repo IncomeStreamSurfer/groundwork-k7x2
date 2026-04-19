@@ -1,0 +1,28 @@
+---
+import Base from '../../layouts/Base.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import { getProducts } from '../../lib/supabase';
+export const prerender = false;
+const products = await getProducts();
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') || '';
+const structuredData = [
+  { "@context":"https://schema.org", "@type":"CollectionPage", name: "Shop — Groundwork Coffee Co.", url: `${siteUrl}/shop`, description: "All coffees and brewing equipment in stock at Groundwork." },
+  { "@context":"https://schema.org", "@type":"BreadcrumbList", itemListElement:[ {"@type":"ListItem",position:1,name:"Home",item:siteUrl}, {"@type":"ListItem",position:2,name:"Shop",item:`${siteUrl}/shop`} ] },
+];
+---
+<Base title="Shop Coffee & Brewing Tools | Groundwork Coffee Co." description="Browse our full collection of specialty roasted coffees and precision brewing tools. Find your perfect cup at Groundwork Coffee Co." structuredData={structuredData}>
+  <section class="max-w-6xl mx-auto px-6 pt-16 pb-10">
+    <nav class="text-xs text-[#2a1810]/60 mb-4"><a href="/" class="hover:text-[#c9783d]">Home</a> / Shop</nav>
+    <p class="text-xs uppercase tracking-[0.3em] text-[#c9783d] mb-3">The Groundwork shop</p>
+    <h1 class="font-display text-5xl md:text-6xl font-medium text-[#2a1810] leading-tight">Shop All Coffee &amp; Brewing Equipment</h1>
+    <p class="mt-5 max-w-2xl text-lg text-[#2a1810]/70">Fresh roasted beans, precision brewing tools, and curated bundles — everything you need to <a class="underline" href="/shop/coffee">buy coffee online</a> alongside the <a class="underline" href="/shop/brewing-equipment">brewing equipment</a> that unlocks every cup.</p>
+    <div class="mt-8 flex flex-wrap gap-3">
+      <a href="/shop/coffee" class="px-5 py-2.5 bg-[#2a1810] text-white rounded text-sm font-medium">Coffee ({products.filter(p=>p.category==='coffee').length})</a>
+      <a href="/shop/brewing-equipment" class="px-5 py-2.5 border border-[#2a1810] text-[#2a1810] rounded text-sm font-medium">Equipment ({products.filter(p=>p.category==='equipment').length})</a>
+      <a href="/shop/bundles" class="px-5 py-2.5 border border-[#2a1810] text-[#2a1810] rounded text-sm font-medium">Bundles ({products.filter(p=>p.category==='bundle').length})</a>
+    </div>
+  </section>
+  <section class="max-w-6xl mx-auto px-6 py-10">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">{products.map(p => <ProductCard product={p} />)}</div>
+  </section>
+</Base>

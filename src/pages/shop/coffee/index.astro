@@ -1,0 +1,37 @@
+---
+import Base from '../../../layouts/Base.astro';
+import ProductCard from '../../../components/ProductCard.astro';
+import { getProducts } from '../../../lib/supabase';
+export const prerender = false;
+const products = await getProducts({ category: 'coffee' });
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') || '';
+const structuredData = [
+  { "@context":"https://schema.org","@type":"CollectionPage", name:"Specialty Coffee Beans — Groundwork Coffee Co.", url: `${siteUrl}/shop/coffee` },
+  { "@context":"https://schema.org","@type":"ItemList", itemListElement: products.map((p,i)=>({"@type":"ListItem",position:i+1,url:`${siteUrl}/shop/coffee/${p.slug}`,name:p.name})) },
+  { "@context":"https://schema.org","@type":"BreadcrumbList", itemListElement:[ {"@type":"ListItem",position:1,name:"Home",item:siteUrl}, {"@type":"ListItem",position:2,name:"Shop",item:`${siteUrl}/shop`}, {"@type":"ListItem",position:3,name:"Coffee",item:`${siteUrl}/shop/coffee`} ] },
+];
+---
+<Base title="Specialty Coffee Beans Online | Groundwork Coffee Co." description="Shop single-origin and blended specialty coffees, roasted fresh to order. Light, medium, and dark roasts available. Order online today." structuredData={structuredData}>
+  <section class="max-w-6xl mx-auto px-6 pt-16 pb-10">
+    <nav class="text-xs text-[#2a1810]/60 mb-4"><a href="/" class="hover:text-[#c9783d]">Home</a> / <a href="/shop" class="hover:text-[#c9783d]">Shop</a> / Coffee</nav>
+    <p class="text-xs uppercase tracking-[0.3em] text-[#c9783d] mb-3">Single origins &amp; signature blends</p>
+    <h1 class="font-display text-5xl md:text-6xl font-medium text-[#2a1810] leading-tight">Specialty Coffee Beans — Single Origin &amp; Blends</h1>
+    <p class="mt-5 max-w-2xl text-lg text-[#2a1810]/70">Every bag of Groundwork <strong>specialty coffee beans online</strong> is sourced from importers we can name and roasted to order. From bright, floral Ethiopian naturals to a caramel-sweet Colombian washed, to our signature House Blend — you'll find something in the lineup below to love.</p>
+    <p class="mt-3 max-w-2xl text-[#2a1810]/70">New here? Start with <a class="underline" href="/shop/coffee/house-blend">the House Blend</a>, or pair a bag with one of our <a class="underline" href="/shop/brewing-equipment">precision brewing tools</a> for the best home cup you've had.</p>
+  </section>
+  <section class="max-w-6xl mx-auto px-6 py-10">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">{products.map(p => <ProductCard product={p} />)}</div>
+    {!products.length && <p class="text-[#2a1810]/60 text-center py-20">No coffees available right now — we're between roast days. Check back soon.</p>}
+  </section>
+  <section class="max-w-4xl mx-auto px-6 py-16">
+    <h2 class="font-display text-3xl font-medium text-[#2a1810] mb-4">How to choose your coffee</h2>
+    <p class="text-[#2a1810]/75">Not sure which bag to start with? A quick guide:</p>
+    <ul class="space-y-3 text-[#2a1810]/75 mt-4">
+      <li><strong>New to specialty coffee:</strong> try <a class="underline" href="/shop/coffee/house-blend">The House Blend</a> or <a class="underline" href="/shop/coffee/colombia-huila">Colombia Huila</a> — balanced, sweet, forgiving.</li>
+      <li><strong>Pour-over enthusiast:</strong> go with <a class="underline" href="/shop/coffee/ethiopia-yirgacheffe">Ethiopia Yirgacheffe</a> — bright, floral, aromatic.</li>
+      <li><strong>Espresso at home:</strong> <a class="underline" href="/shop/coffee/espresso-roast">Groundwork Espresso Roast</a> paired with our <a class="underline" href="/shop/brewing-equipment/espresso-tamper">calibrated tamper</a>.</li>
+      <li><strong>Caffeine-free but crave flavor:</strong> <a class="underline" href="/shop/coffee/decaf">Swiss Water Decaf</a>.</li>
+    </ul>
+    <p class="text-[#2a1810]/75 mt-6">Still not sure? <a class="underline" href="/contact">Drop us a line</a> — we love helping folks find their perfect cup.</p>
+  </section>
+</Base>

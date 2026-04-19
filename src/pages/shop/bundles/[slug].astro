@@ -1,0 +1,34 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { getProductBySlug, getProducts, formatPrice } from '../../../lib/supabase';
+import ProductCard from '../../../components/ProductCard.astro';
+export const prerender = false;
+const { slug } = Astro.params;
+const product = slug ? await getProductBySlug(slug) : null;
+if (!product || product.category !== 'bundle') { return Astro.redirect('/shop/bundles', 302); }
+const related = (await getProducts({ category: 'bundle' })).filter(p => p.slug !== product.slug).slice(0, 3);
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') || '';
+const structuredData = [
+  { "@context":"https://schema.org","@type":"Product", name: product.name, description: product.short_description || product.description || '', image: product.image_url, sku: product.slug, brand: { "@type":"Brand", name: "Groundwork Coffee Co." }, offers: { "@type":"Offer", price: (product.price_pence/100).toFixed(2), priceCurrency: product.currency || 'USD', availability: "https://schema.org/InStock", url: `${siteUrl}/shop/bundles/${product.slug}` } },
+  { "@context":"https://schema.org","@type":"BreadcrumbList", itemListElement:[ {"@type":"ListItem",position:1,name:"Home",item:siteUrl}, {"@type":"ListItem",position:2,name:"Shop",item:`${siteUrl}/shop`}, {"@type":"ListItem",position:3,name:"Bundles",item:`${siteUrl}/shop/bundles`}, {"@type":"ListItem",position:4,name:product.name,item:`${siteUrl}/shop/bundles/${product.slug}`} ] },
+];
+---
+<Base title={product.seo_title || `${product.name} | Groundwork Coffee Co.`} description={product.seo_description || product.short_description || ''} ogImage={product.image_url || undefined} ogType="product" structuredData={structuredData}>
+  <section class="max-w-6xl mx-auto px-6 pt-10 pb-16">
+    <nav class="text-xs text-[#2a1810]/60 mb-4"><a href="/" class="hover:text-[#c9783d]">Home</a> / <a href="/shop/bundles" class="hover:text-[#c9783d]">Bundles</a> / {product.name}</nav>
+    <div class="grid md:grid-cols-2 gap-10">
+      <div class="aspect-square md:aspect-[4/5] bg-[#e8d9c0] rounded-xl overflow-hidden">{product.image_url && <img src={product.image_url} alt={`${product.name} — ${product.short_description}`} class="w-full h-full object-cover" />}</div>
+      <div>
+        <p class="text-xs uppercase tracking-[0.3em] text-[#c9783d] mb-3">Curated bundle</p>
+        <h1 class="font-display text-4xl md:text-5xl font-medium text-[#2a1810] leading-tight">{product.name}</h1>
+        <div class="mt-5 flex items-baseline gap-4"><span class="text-3xl font-semibold text-[#2a1810]">{formatPrice(product.price_pence, product.currency)}</span><span class="text-sm px-3 py-1 bg-[#c9783d] text-white rounded-full">Save ~20%</span></div>
+        <p class="mt-6 text-lg text-[#2a1810]/75">{product.short_description}</p>
+        {product.tasting_notes?.length && (<div class="mt-6"><div class="text-xs uppercase tracking-[0.2em] text-[#2a1810]/50 mb-2">What's in the bundle</div><ul class="space-y-2">{product.tasting_notes.map(n => <li class="text-[#2a1810]/80 flex items-center gap-2">✓ {n}</li>)}</ul></div>)}
+        <button type="button" data-add-to-cart data-slug={product.slug} data-name={product.name} data-price={product.price_pence} data-image={product.image_url} class="mt-8 w-full md:w-auto px-10 py-4 bg-[#2a1810] text-white font-semibold rounded hover:bg-[#3d2817] transition-colors">Add bundle to cart · {formatPrice(product.price_pence, product.currency)}</button>
+        <div class="mt-6 text-xs text-[#2a1810]/60 space-y-1"><p>🎁 Ready to gift — beautifully packaged</p><p>📦 Always free shipping on bundles</p><p>↺ 30-day satisfaction guarantee</p></div>
+      </div>
+    </div>
+  </section>
+  <section class="bg-[#2a1810] text-[#e8d9c0] py-14"><div class="max-w-4xl mx-auto px-6"><p class="text-xs uppercase tracking-[0.3em] text-[#c9783d] mb-3">About this bundle</p><h2 class="font-display text-3xl md:text-4xl font-medium text-white mb-5 leading-tight">{product.name}</h2><p class="text-lg text-[#e8d9c0]/85 leading-relaxed">{product.description}</p></div></section>
+  {related.length > 0 && (<section class="max-w-6xl mx-auto px-6 py-20"><h2 class="font-display text-3xl font-medium text-[#2a1810] mb-8">Other bundles</h2><div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">{related.map(p => <ProductCard product={p} hrefPrefix="/shop/bundles" />)}</div></section>)}
+</Base>

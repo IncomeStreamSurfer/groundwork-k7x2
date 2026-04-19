@@ -1,0 +1,30 @@
+---
+import Base from '../../../layouts/Base.astro';
+import ProductCard from '../../../components/ProductCard.astro';
+import { getProducts } from '../../../lib/supabase';
+export const prerender = false;
+const products = await getProducts({ category: 'bundle' });
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') || '';
+const structuredData = [
+  { "@context":"https://schema.org", "@type":"CollectionPage", name:"Coffee & Brewing Equipment Bundles", url:`${siteUrl}/shop/bundles` },
+  { "@context":"https://schema.org","@type":"ItemList", itemListElement: products.map((p,i)=>({"@type":"ListItem",position:i+1,url:`${siteUrl}/shop/bundles/${p.slug}`,name:p.name})) },
+  { "@context":"https://schema.org","@type":"BreadcrumbList", itemListElement:[ {"@type":"ListItem",position:1,name:"Home",item:siteUrl}, {"@type":"ListItem",position:2,name:"Shop",item:`${siteUrl}/shop`}, {"@type":"ListItem",position:3,name:"Bundles",item:`${siteUrl}/shop/bundles`} ] },
+];
+---
+<Base title="Coffee & Brewing Equipment Bundles | Groundwork Coffee Co." description="Get more for less with our curated coffee and gear bundles. Perfect for gifts or leveling up your home setup. Shop bundles today." structuredData={structuredData}>
+  <section class="max-w-6xl mx-auto px-6 pt-16 pb-10">
+    <nav class="text-xs text-[#2a1810]/60 mb-4"><a href="/" class="hover:text-[#c9783d]">Home</a> / <a href="/shop" class="hover:text-[#c9783d]">Shop</a> / Bundles</nav>
+    <p class="text-xs uppercase tracking-[0.3em] text-[#c9783d] mb-3">Bundles &amp; gifts</p>
+    <h1 class="font-display text-5xl md:text-6xl font-medium text-[#2a1810] leading-tight">Coffee &amp; Gear Bundles — Everything You Need to Brew Better</h1>
+    <p class="mt-5 max-w-2xl text-lg text-[#2a1810]/70">Our <strong>coffee and brewing equipment bundles</strong> pair fresh-roasted beans with the tools to brew them properly — curated sets with real savings. Great as gifts, better as a shortcut to a coffee routine you'll actually love. Browse the kits, or build your own from our <a class="underline" href="/shop/coffee">coffee range</a> and <a class="underline" href="/shop/brewing-equipment">equipment lineup</a>.</p>
+  </section>
+  <section class="max-w-6xl mx-auto px-6 py-10">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">{products.map(p => <ProductCard product={p} hrefPrefix="/shop/bundles" />)}</div>
+  </section>
+  <section class="max-w-4xl mx-auto px-6 py-16 space-y-5 text-[#2a1810]/75">
+    <h2 class="font-display text-3xl font-medium text-[#2a1810]">Why bundles?</h2>
+    <p>Because great coffee needs great tools — and vice versa. Our bundles bake in a 15–20% discount vs buying each piece separately, so the savings flow into the cup.</p>
+    <ul class="space-y-3"><li>✓ A single perfectly-matched kit for a specific brew method</li><li>✓ Packaged for gifting — no wrapping needed</li><li>✓ Free shipping, always, on bundles</li></ul>
+    <p>Read our <a class="underline" href="/shipping-returns">shipping &amp; returns policy</a> or jump into the <a class="underline" href="/faq">FAQ</a> for anything else.</p>
+  </section>
+</Base>

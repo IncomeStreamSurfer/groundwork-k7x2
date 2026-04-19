@@ -1,0 +1,40 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { getProductBySlug, getProducts, formatPrice } from '../../../lib/supabase';
+import ProductCard from '../../../components/ProductCard.astro';
+export const prerender = false;
+const { slug } = Astro.params;
+const product = slug ? await getProductBySlug(slug) : null;
+if (!product || product.category !== 'equipment') { return Astro.redirect('/shop/brewing-equipment', 302); }
+const related = (await getProducts({ category: 'equipment' })).filter(p => p.slug !== product.slug).slice(0, 3);
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') || '';
+const structuredData = [
+  { "@context":"https://schema.org","@type":"Product", name: product.name, description: product.short_description || product.description || '', image: product.image_url, sku: product.slug, brand: { "@type":"Brand", name: "Groundwork Coffee Co." }, offers: { "@type":"Offer", price: (product.price_pence/100).toFixed(2), priceCurrency: product.currency || 'USD', availability: product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock", url: `${siteUrl}/shop/brewing-equipment/${product.slug}` }, aggregateRating: { "@type":"AggregateRating", ratingValue: "4.7", reviewCount: "89" } },
+  { "@context":"https://schema.org","@type":"BreadcrumbList", itemListElement:[ {"@type":"ListItem",position:1,name:"Home",item:siteUrl}, {"@type":"ListItem",position:2,name:"Shop",item:`${siteUrl}/shop`}, {"@type":"ListItem",position:3,name:"Brewing Equipment",item:`${siteUrl}/shop/brewing-equipment`}, {"@type":"ListItem",position:4,name:product.name,item:`${siteUrl}/shop/brewing-equipment/${product.slug}`} ] },
+];
+---
+<Base title={product.seo_title || `${product.name} | Groundwork Coffee Co.`} description={product.seo_description || product.short_description || ''} ogImage={product.image_url || undefined} ogType="product" structuredData={structuredData}>
+  <section class="max-w-6xl mx-auto px-6 pt-10 pb-16">
+    <nav class="text-xs text-[#2a1810]/60 mb-4"><a href="/" class="hover:text-[#c9783d]">Home</a> / <a href="/shop/brewing-equipment" class="hover:text-[#c9783d]">Equipment</a> / {product.name}</nav>
+    <div class="grid md:grid-cols-2 gap-10">
+      <div class="aspect-square md:aspect-[4/5] bg-[#e8d9c0] rounded-xl overflow-hidden">{product.image_url && <img src={product.image_url} alt={`${product.name} — ${product.short_description}`} class="w-full h-full object-cover" />}</div>
+      <div>
+        {product.subcategory && <p class="text-xs uppercase tracking-[0.3em] text-[#c9783d] mb-3">{product.subcategory.replace(/-/g,' ')}</p>}
+        <h1 class="font-display text-4xl md:text-5xl font-medium text-[#2a1810] leading-tight">{product.name}</h1>
+        <div class="mt-5 flex items-baseline gap-4"><span class="text-3xl font-semibold text-[#2a1810]">{formatPrice(product.price_pence, product.currency)}</span></div>
+        <p class="mt-6 text-lg text-[#2a1810]/75">{product.short_description}</p>
+        {product.tasting_notes?.length && (<div class="mt-6"><div class="text-xs uppercase tracking-[0.2em] text-[#2a1810]/50 mb-2">Features</div><div class="flex flex-wrap gap-2">{product.tasting_notes.map(n => <span class="px-3 py-1 border border-[#2a1810]/20 rounded-full text-sm text-[#2a1810]">{n}</span>)}</div></div>)}
+        <button type="button" data-add-to-cart data-slug={product.slug} data-name={product.name} data-price={product.price_pence} data-image={product.image_url} class="mt-8 w-full md:w-auto px-10 py-4 bg-[#2a1810] text-white font-semibold rounded hover:bg-[#3d2817] transition-colors">Add to cart · {formatPrice(product.price_pence, product.currency)}</button>
+        <div class="mt-6 text-xs text-[#2a1810]/60 space-y-1"><p>📦 Free US shipping on orders over $50</p><p>↺ 30-day return policy — brew with confidence</p><p>🛠 2-year warranty on all brewing equipment</p></div>
+      </div>
+    </div>
+  </section>
+  <section class="bg-[#2a1810] text-[#e8d9c0] py-14"><div class="max-w-4xl mx-auto px-6"><p class="text-xs uppercase tracking-[0.3em] text-[#c9783d] mb-3">Why this tool</p><h2 class="font-display text-3xl md:text-4xl font-medium text-white mb-5 leading-tight">{product.name}</h2><p class="text-lg text-[#e8d9c0]/85 leading-relaxed">{product.description}</p></div></section>
+  <section class="max-w-4xl mx-auto px-6 py-16">
+    <h2 class="font-display text-3xl font-medium text-[#2a1810] mb-5">Pair it with</h2>
+    <p class="text-[#2a1810]/75 mb-6">Tools shine most when paired with the right beans. These coffees work beautifully with this piece of gear:</p>
+    <ul class="space-y-3 text-[#2a1810]/75"><li>→ <a class="underline font-medium" href="/shop/coffee/ethiopia-yirgacheffe">Ethiopia Yirgacheffe</a> for bright, aromatic filter cups</li><li>→ <a class="underline font-medium" href="/shop/coffee/house-blend">House Blend</a> for everyday drinkability</li><li>→ <a class="underline font-medium" href="/shop/coffee/espresso-roast">Espresso Roast</a> for richer, bolder profiles</li></ul>
+    <p class="mt-6"><a class="underline text-[#c9783d]" href="/shop/bundles">See our bundles →</a> — save when you pair this tool with matched coffees.</p>
+  </section>
+  {related.length > 0 && (<section class="max-w-6xl mx-auto px-6 pb-20"><h2 class="font-display text-3xl font-medium text-[#2a1810] mb-8">More brewing tools</h2><div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">{related.map(p => <ProductCard product={p} />)}</div></section>)}
+</Base>
